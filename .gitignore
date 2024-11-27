@@ -1,0 +1,4 @@
+/backend/node_modules/
+
+# Optionally, if you also want to ignore node_modules in the frontend folder
+/frontend/travel-blog-app/node_modules/
