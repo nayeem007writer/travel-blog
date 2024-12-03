@@ -94,6 +94,8 @@ app.get('/get-user', authenticateToken,async( req, res) => {
    });
 })
 
+
+
 app.post('/add-travel-story',authenticateToken, async( req, res) => {
    const { title, story, visitedDate, imageUrl, visitedLocation } = req.body;
    const  userId  = req.user.userId;
@@ -135,6 +137,137 @@ app.get("/get-all-story", authenticateToken, async (req, res) => {
    }
 })
 
+app.put('/update-travel-story/:id', authenticateToken, async( req, res) => {
+   const { id } = req.params;
+   const { title, story, visitedDate, imageUrl, visitedLocation } = req.body;
+   const  userId  = req.user.userId;
+
+   if(!title || !story || !visitedDate || !imageUrl || !visitedLocation) {
+      return res.status(400).json({ error: true, message: "All field required"});
+   }
+
+   const parsedVisitedDate = new Date(parseInt(visitedDate));
+
+   try {
+      const travelStory = await TravelStory.findOne({_id:id, userId: userId});
+      
+      if(!travelStory) {
+         return res.status(404).json({error: true, message:"Travel story not found!"})
+      }
+   }
+   catch(err) {
+      console.log(err);
+      res.status(400).json({error: true, message: err.message})
+   }
+
+})
+
+app.delete('/delete-travel-story/:id' ,authenticateToken ,async( req, res ) => {
+   const { id } = req.params;
+   const { userId } = req.user;
+
+   const travelStory = await TravelStory.findOne({_id:id, userId: userId});
+      
+   if(!travelStory) {
+      return res.status(404).json({error: true, message:"Travel story not found!"})
+   }
+
+   try{
+      await travelStory.deleteOne({_id: id, userId: userId});
+
+      const imageUrl = travelStory.imageUrl;
+      const filename = path.basename(imageUrl);
+   
+      const filePath = path.join(__dirname, "uploads", filename);
+   
+      fs.unlink(filePath, (err) => {
+         if(err) {
+            console.error("failed to delete image file", err)
+         }
+      });
+   
+      res.status(200).json({message: "Travel story delete successfully"})
+   }
+   catch(err) {
+      console.log(err);
+      res.status(400).json({error: true, message: err.message})
+   }
+})
+
+app.patch('/update-is-favourite/:id',authenticateToken, async (req, res) => {
+   const { id } = req.params;
+   const { isFavourite } = req.boby;
+   const { userId } = req.user;
+
+   try{
+      const traveStory = await TravelStory.findOne({_id: id, userId: userId});
+
+      if(!traveStory) {
+         return res.status(404).json({error: true, message:"Travel story not found!"})
+      } 
+      traveStory.isFavourite = isFavourite;
+
+      await traveStory.save();
+      res.status(200).json({story: traveStory, message: "Update Successfully"})
+   }
+   catch(err) {
+      console.log(err);
+      res.status(400).json({error: true, message: err.message})
+   }
+})
+
+app.get('/search' ,authenticateToken ,async (req, res) => {
+   const { query } = req.query;
+   const { userId } = req.user;
+
+   if(!query) {
+      return res.status(404).json({error: true, message: "Query is empty!"});
+   }
+
+   try {
+      const searchResult = await TravelStory.find({
+         userId: userId,
+         $or: [
+            { title: { $regex: query, $options: "i"} },
+            { story: { $regex: query, $options: "i"} },
+            { visitedLocation: { $regex: query, $options: "i"} },
+         ]
+      }).sort({ isFavourite: -1});
+
+      res.status(200).json({stories: searchResult});
+   }
+   catch(err) {
+      console.log(err);
+      res.status(400).json({error: true, message: err.message})
+   }
+})
+
+app.get('/travel-story-filter', authenticateToken, async (req, res) => {
+   const { startDate, endDate } = req.query;
+   const { userId } = req.user;
+
+
+   try {
+      const start = new Date(parseInt(startDate));
+      const end = new Date(parseInt(endDate));
+
+      const filterStories = await TravelStory.find({
+         userId: userId,
+         visitedDate: {
+            $gte: start,
+            $lte: end,
+         },
+      }).sort({ isFavourite: -1});
+      res.status(200).json({error: false, stories: filterStories})
+   }
+   catch(err) {
+      console.log(err);
+      res.status(400).json({error: true, message: err.message})
+   }
+})
+
+
+//image related
 app.post("/image-up", upload.single('image'), async( req, res ) => {
    try{
       if(!req.file) {
