@@ -4,7 +4,9 @@
 import { useEffect, useState } from "react"
 import Navbar from "../../components/Navbar"
 import { useNavigate } from "react-router-dom";
-import axiosInstant from "../../utils/axios.constant";
+import TravelStoryCard from "../../components/TravelStoryCard";
+import axiosInstant from "../../utils/axios.constant"
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -54,7 +56,31 @@ const Home = () => {
     <Navbar userInfo= {userInfo}/>
     <div className="container mx-auto py-10">
       <div className="flex- gap-7">
-        <div className="flex-1"></div>
+        <div className="flex-1">
+          {allStories.length >0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              {allStories.map((item) => {
+                return (
+                  <TravelStoryCard 
+                  
+                  key={item._id}
+                  imgUrl={item.imageUrl}
+                  title={item.title}
+                  story={item.story}
+                  date={item.visitedDate}
+                  visitedLocation= {item.visitedLocation}
+                  isFavourite= {item.isFavourite}
+                  onEdit={() => handleEdit(item)}
+                  onClick={()=> handleViewStory(item)}
+                  onFavouriteClick={()=> upateisFav(item)}
+                  />
+                )
+              })}
+            </div>
+          ):
+          (<>Empty Card Here</>)
+          }
+        </div>
         <div className="w-[320px]"></div>
       </div>
     </div>
