@@ -1,6 +1,6 @@
 // import React from 'react'
 
-import { Navigate, useNavigate, } from "react-router-dom"
+import {  useNavigate, } from "react-router-dom"
 import PasswordInput from "../../components/passwordInput"
 import { useState } from "react"
 import { validateEmail } from "../../utils/helper"
@@ -65,7 +65,7 @@ const Login = () => {
             </p>
           </div>
         </div>
-        <div className="w-2/4 h-[75vh] bg-white rounded-r-lg relative p-16 shadow-lg shadoe-cyan-200-20">
+        <div className="w-2/4 h-[90vh] bg-white rounded-r-lg relative p-16 shadow-lg shadoe-cyan-200-20">
           
           <form onSubmit={handleLogin}>
             <h4 className="text-2xl font-semibold mb-7">Sign In</h4>
@@ -84,9 +84,9 @@ const Login = () => {
             {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
             <button type='submit'className="btn-primary">LOGIN</button>
           
-            <p className="text-xs text-slate-500 text-center my-4">Or</p>
+            <p className="text-xs text-slate-500 text-center font-bold my-4">Or</p>
 
-            <button type="submit" className="btn-primary btn-light" onClick={() => {Navigate('/signup')}}>
+            <button type="submit" className="btn-primary btn-light" onClick={() => (nevigate("/signup"))}>
               Create Account
             </button>
           </form>

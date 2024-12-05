@@ -14,7 +14,8 @@ export default {
         seconday:"#EF86E3",
       },
       backgroundImage: {
-        'bg-login-bg-img': "url('./src/assets/login.jpg')"
+        'bg-login-bg-img': "url('./src/assets/login.jpg')",
+        'bg-signup-bg-img': "url('./src/assets/signup.jpg')",
       }
     },
   },

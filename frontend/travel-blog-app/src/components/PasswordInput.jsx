@@ -11,7 +11,7 @@ const PasswordInput = ({value, onChange, placeholder}) => {
 
 
   return (
-    <div className="flex items-center bg-cyan-600/5 px-5 rounded mb-3 ">
+    <div className="flex items-center bg-cyan-600/5 px-5 rounded mb-9 ">
       
       <input
       value={value}
