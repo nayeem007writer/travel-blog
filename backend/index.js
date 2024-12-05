@@ -14,7 +14,7 @@ const { error } = require('console');
 connectDB();
 const app = express();
 app.use(express.json());
-app.use(cors({origin:"*"}));
+app.use(cors({origin: 'http://localhost:5173'}));
 
 app.post("/signup", async( req, res) => {
     const {fullName, email, password} = req.body
@@ -83,7 +83,7 @@ app.post("/login", async(req, res) => {
 
 app.get('/get-user', authenticateToken,async( req, res) => {
    const userId = req.user.userId;
-
+   console.log(userId)
    const isUser = await userModel.findOne({_id: userId});
 
    if(!isUser) return res.sendStatus(401);
@@ -125,12 +125,12 @@ app.post('/add-travel-story',authenticateToken, async( req, res) => {
    }
 })
 
-app.get("/get-all-story", authenticateToken, async (req, res) => {
+app.get("/all-story", authenticateToken, async (req, res) => {
    const userId = req.user.userId;
 
    try {
       const travelStories = await TravelStory.find({userId: userId}).sort({isFavourite: -1});
-      res.status(500).json({stories: travelStories})
+      res.status(200).json({stories: travelStories})
    }
    catch (err) {
       res.status(500).json({error: ture , message: err.message})

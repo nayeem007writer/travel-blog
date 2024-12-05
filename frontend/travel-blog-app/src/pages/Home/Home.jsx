@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // import React from 'react'
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Navbar from "../../components/Navbar"
 import { useNavigate } from "react-router-dom";
 import TravelStoryCard from "../../components/TravelStoryCard";
@@ -10,24 +10,29 @@ import axiosInstant from "../../utils/axios.constant"
 
 const Home = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
 
-  const [allStories, setAllStories ] = useState({});
+  const [allStories, setAllStories ] = useState([]);
 
   const getAllStories = async () => {
     try{
-      const response = await axiosInstant.get('/get-all-story');
-      if(response.data && response.data.stories) {
+      // const response = await axiosInstant.get("/get-all-story",)
+      const response = await axiosInstant.get('/all-story');
+      console.log(response)
+      if(response.data.stories&& response.data) {
         setAllStories(response.data.stories);
       } 
+      else {
+        console.log("No stories found in the response.");
+      }
     } catch (err) {
       console.log(`unexpected error araise ,please try agian ${err}`)
     }
-  } 
+  }
 
   const getUserInfo = async () => {
     try{
-      const response = await axiosInstant.get('/get-user');
+      const response = await axiosInstant.get('/get-user',);
 
       if(response.data.user && response.data) {
         console.log(response)
@@ -42,8 +47,11 @@ const Home = () => {
     }
   }
 
+  const handleEdit = (data) => {}
+  const handleViewStory =(data) => {}
+  const upateisFav = async(data) => {}
   useEffect(()=> {
-    getAllStories()
+    getAllStories();
     getUserInfo();
     return () => {}
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,9 +63,9 @@ const Home = () => {
     <>
     <Navbar userInfo= {userInfo}/>
     <div className="container mx-auto py-10">
-      <div className="flex- gap-7">
+      <div className="flex gap-7">
         <div className="flex-1">
-          {allStories.length >0 ? (
+          {allStories.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
               {allStories.map((item) => {
                 return (
@@ -84,6 +92,7 @@ const Home = () => {
         <div className="w-[320px]"></div>
       </div>
     </div>
+
     </>
   )
 }
