@@ -10,10 +10,7 @@ const travelStorySchema = new Schema({
         type: String,
         required: true,
     },
-    visitedLocation: {
-        type: String,
-        default: [],
-    },
+    visitedLocation: { type: String, required: true},
     isFavourite: {
         type: Boolean,
         default: false,

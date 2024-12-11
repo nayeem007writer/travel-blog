@@ -196,7 +196,8 @@ app.delete('/delete-travel-story/:id' ,authenticateToken ,async( req, res ) => {
 
 app.patch('/update-is-favourite/:id',authenticateToken, async (req, res) => {
    const { id } = req.params;
-   const { isFavourite } = req.boby;
+   const  isFavourite  = req.body.isFavourite;
+   console.log(req.body.isFavourite)
    const { userId } = req.user;
 
    try{

@@ -5,14 +5,23 @@ import { useCallback, useEffect, useState } from "react"
 import Navbar from "../../components/Navbar"
 import { useNavigate } from "react-router-dom";
 import TravelStoryCard from "../../components/TravelStoryCard";
+import { MdAdd } from 'react-icons/md'
+import Modal from 'react-modal'
 import axiosInstant from "../../utils/axios.constant"
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import AddEditTravels from "./AddEditTravels";
 
 const Home = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
 
   const [allStories, setAllStories ] = useState([]);
+  const [openAddEditModal, setOpenAddEditModal] = useState({
+    isShown: false,
+    type: 'add',
+    data: null
+  })
 
   const getAllStories = async () => {
     try{
@@ -49,7 +58,26 @@ const Home = () => {
 
   const handleEdit = (data) => {}
   const handleViewStory =(data) => {}
-  const upateisFav = async(data) => {}
+
+  ///make story favourite
+  const upateisFav = async(data) => {
+    const storyId = data._id;
+    try{
+       const response = await axiosInstant.patch(`/update-is-favourite/${storyId}`,
+        {
+          isFavourite: !data.isFavourite
+        });
+
+       if(response.data && response.data.story)  {
+        toast.success('stories update successfully')
+        getAllStories();
+       }
+
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
   useEffect(()=> {
     getAllStories();
     getUserInfo();
@@ -93,6 +121,40 @@ const Home = () => {
       </div>
     </div>
 
+    <button
+     className="w-16 h-16 flex items-center   rounded-full bg-primary hover:bg-cyan-400 fixed right-9 bottom-10"
+     onClick={() => {
+      setOpenAddEditModal({ isShown: true, type: 'add', data: null});
+
+     }}
+     >
+
+      <Modal
+        isOpen={openAddEditModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999,
+          }
+        }}
+        appElement={document.getElementById('root')}
+        className='model-box'>
+          <AddEditTravels 
+           type={openAddEditModal.type}
+           storyInfo={openAddEditModal.data}
+           onClose={() => {
+            setOpenAddEditModal({isShown: false, type: 'add', data: null})
+
+           }}
+           getAllStories={getAllStories}
+           />
+        </Modal>
+
+      <MdAdd className='text-[52px] pl-2  text-white'/>
+      </button>      
+
+    <ToastContainer />
     </>
   )
 }
