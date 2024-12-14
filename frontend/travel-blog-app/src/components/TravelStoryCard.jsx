@@ -17,14 +17,15 @@ const TravelStoryCard = ({
 
 }) => {
   console.log('Image URL:', imgUrl);
+
   return (
     <div className="border rounded-lg overflow-hidden bg-white hover: shadow-lg hover: shadow-slate-200 transition-all ease-in-out relative cursor-pointer">
       <img src={imgUrl}
       className="w-full h-56 object-cover rounded-lg"
       onClick={onClick}
-      />
+      ></img>
 
-      <button className="w-19 h-19 flex items-center justify-center bg-white/40 rounded-lg border-white/38 absolute top-4 right-4" onClick={onFavouriteClick}>
+      <button className="w-39 h-39 p-2 flex items-center justify-center bg-white/40 rounded-lg border-white/38 absolute top-4 right-4" onClick={onFavouriteClick}>
         <FaHeart className={`icon-btn ${isFavourite ? "text-red-500": "text-white"}`}/>
       </button>
       <div className="p-4" onClick={onClick}>

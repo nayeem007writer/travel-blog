@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react"
 import { FaRegFileImage } from "react-icons/fa6";
