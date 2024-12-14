@@ -16,9 +16,10 @@ const TravelStoryCard = ({
   onFavouriteClick
 
 }) => {
+  console.log('Image URL:', imgUrl);
   return (
     <div className="border rounded-lg overflow-hidden bg-white hover: shadow-lg hover: shadow-slate-200 transition-all ease-in-out relative cursor-pointer">
-      <img src={imgUrl} alt={title}
+      <img src={imgUrl}
       className="w-full h-56 object-cover rounded-lg"
       onClick={onClick}
       />

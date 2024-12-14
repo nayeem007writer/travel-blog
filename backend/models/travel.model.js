@@ -10,7 +10,10 @@ const travelStorySchema = new Schema({
         type: String,
         required: true,
     },
-    visitedLocation: { type: String, required: true},
+    visitedLocation: { 
+        type: [String], // Changed to an array of strings
+        required: true,
+    },
     isFavourite: {
         type: Boolean,
         default: false,
@@ -30,7 +33,6 @@ const travelStorySchema = new Schema({
         type: Date,
         required: true,
     }
-
-},{ timestamps: true });
+}, { timestamps: true });
 
 module.exports = mongoose.model("TravelStory", travelStorySchema);

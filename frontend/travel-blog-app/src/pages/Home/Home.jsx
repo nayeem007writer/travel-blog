@@ -96,7 +96,9 @@ const Home = () => {
           {allStories.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
               {allStories.map((item) => {
+                console.log(item.imageUrl)
                 return (
+                  
                   <TravelStoryCard 
                   
                   key={item._id}

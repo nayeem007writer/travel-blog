@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
 import { MdAdd, MdClose, MdOutlineDateRange, MdUpdate } from "react-icons/md"
@@ -5,6 +6,10 @@ import DateSelector from "../../components/input/DateSelector"
 import { useState } from "react"
 import ImageSelector from "../../components/input/ImageSelector";
 import TagInput from "../../components/input/TagInput";
+import axiosInstant from "../../utils/axios.constant"
+import moment from "moment";
+import { toast } from "react-toastify";
+import uploadImage from "../../utils/uploadImage";
 
 const AddEditTravels = ({
   storyInfo,
@@ -16,22 +21,72 @@ const AddEditTravels = ({
   const [visitedDate, setVisitedDate] = useState(null);
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
-  const [visitedLocation, setVisitedLocation] = useState("");
+  const [visitedLocation, setVisitedLocation] = useState([]);
   const [storyImg, setStoryImg] = useState(null);
+  const [error, setError] = useState('');
 
   const handleDeleteImg = async () => {}
+
+  const addNewTravelStory = async () => {
+    try{
+        let imageUrl = ""
+        if(storyImg) {
+          const imgUploadRefs = await uploadImage(storyImg);
+
+          imageUrl = imgUploadRefs.imageUrl || '';
+        }
+        const response = await axiosInstant.post('/add-travel-story', {
+            title,
+            story,
+            imageUrl: imageUrl || '',
+            visitedLocation,
+            visitedDate: visitedDate ? moment(visitedDate).valueOf(): moment().valueOf()
+            
+          })
+          if(response.data && response.data.story) {
+            toast.success('Story Added Successfully')
+            getAllStories()
+            onClose()
+          }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  const updateTheTravelStory = async () => {}
+
   const handleAddUpdateClick = () => {
+    console.log(' Input data:', title, story,)
+    console.log(storyImg, visitedDate, visitedLocation)
+
+    if(!title) {
+      setError('Please enter the title') 
+      return
+    }
+    if(!story) {
+      setError('Please enter the story') 
+      return
+    }
+    setError('')
+
+    if( !type === 'edit'){
+      updateTheTravelStory()
+    }
+    else{
+      addNewTravelStory()
+    }
 
   }
   return (
     <div>
       <div className="flex items-center justify-between">
         <h5 className="text-xl font-medium text-slate700">
-          {type === 'edit'? 'Add Story': 'Update Story'}
+          {type === 'add'? 'Add Story': 'Update Story'}
         </h5>
+
         <div>
           <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
-            { type==='edit' ?<button className="btn-small" onClick={()=> {}}>
+            { type==='add' ? <button className="btn-small" onClick={handleAddUpdateClick}>
               <MdAdd className="text-lg"/> ADD STORY
             </button>: <>
             <button className="btn-small" onClick={handleAddUpdateClick}>
@@ -45,6 +100,9 @@ const AddEditTravels = ({
             <button className="" onClick={()=>{}}>
               <MdClose className="text-xl text-slate-400" />
             </button>
+            {error && (
+              <p className="text-red-500 text-xs pt-2 text-right">{error}</p>
+            )}
 
           </div>
         </div>
@@ -77,17 +135,10 @@ const AddEditTravels = ({
 
            </textarea>
            </div>
-           <div className="pt-4 flex flex-col gap-2 ">
-              <label className="input-label">VISITED LOCATION</label>
-          <input
-           type="text"
-           className="text-sm text-slate-950 outline-none"
-           placeholder="A day at the great wall"
-           value={visitedLocation}
-           onChange={({target}) => setVisitedLocation(target.value)}
-           />
-              
-           </div>
+              <div className="pt-3">
+                <label className="input-label">VISITED LOCATION</label>
+                <TagInput tags={visitedLocation} setTags={setVisitedLocation}/>
+              </div>
         </div>
       </div>
     </div>

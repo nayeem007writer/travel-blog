@@ -14,8 +14,11 @@ const { error } = require('console');
 connectDB();
 const app = express();
 app.use(express.json());
-app.use(cors({origin: 'http://localhost:5173'}));
+app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+app.use("/assets", express.static(path.join(__dirname, "assets")))
 
+//apis
 app.post("/signup", async( req, res) => {
     const {fullName, email, password} = req.body
     console.log(req.body)
@@ -99,7 +102,7 @@ app.get('/get-user', authenticateToken,async( req, res) => {
 app.post('/add-travel-story',authenticateToken, async( req, res) => {
    const { title, story, visitedDate, imageUrl, visitedLocation } = req.body;
    const  userId  = req.user.userId;
-
+   console.log(req.body)
    if(!title || !story || !visitedDate || !imageUrl || !visitedLocation) {
       return res.status(400).json({ error: true, message: "all field required"});
    }
@@ -274,7 +277,7 @@ app.post("/image-up", upload.single('image'), async( req, res ) => {
       if(!req.file) {
          return res.status(400).json({error: true, message: "No image uploaded"})
       }
-      console.log(req.file)
+      console.log('++++++++++++++++++++++++++++++++++++',req.file.filename)
       const imageUrl = `http:loacalhot:8000/uploads/${req.file.filename}`;
       res.status(201).json({imageUrl});
    }
@@ -308,8 +311,7 @@ app.delete("/delete-image", async( req, res) => {
    }
 })
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")))
-app.use("/assets", express.static(path.join(__dirname, "assets")))
+
 
 app.listen((8000), () => {
     console.log('app running on port 8000')
