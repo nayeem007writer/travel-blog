@@ -11,6 +11,7 @@ import axiosInstant from "../../utils/axios.constant"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddEditTravels from "./AddEditTravels";
+import ViewTravelStory from "./ViewTravelStory";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,6 +22,11 @@ const Home = () => {
     isShown: false,
     type: 'add',
     data: null
+  })
+
+  const [openViewModal, setOpenViewModal] = useState({
+    isShown: false,
+    data: null,
   })
 
   const getAllStories = async () => {
@@ -57,7 +63,9 @@ const Home = () => {
   }
 
   const handleEdit = (data) => {}
-  const handleViewStory =(data) => {}
+  const handleViewStory =(data) => {
+    setOpenViewModal({isShown:true, data})
+  }
 
   ///make story favourite
   const upateisFav = async(data) => {
@@ -151,7 +159,29 @@ const Home = () => {
            }}
            getAllStories={getAllStories}
            />
-        </Modal>
+      </Modal>
+
+      <Modal
+        isOpen={openViewModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999,
+          }
+        }}
+        appElement={document.getElementById('root')}
+        className='model-box'>
+          <ViewTravelStory
+            onClose = {() => {
+              setOpenViewModal((prevState) => ({...prevState, isShown: false}))
+            }}
+            onEditClick = {() => {}}
+            onDeleteClick = {() => {}}
+            storyInfo = {openViewModal.data || null}
+          />
+
+        </Modal>     
 
       <MdAdd className='text-[52px] pl-2  text-white'/>
       </button>      
